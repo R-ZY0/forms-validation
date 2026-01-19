@@ -42,6 +42,7 @@ if (isset($_SESSION['scrf_token']) && $_SESSION['scrf_token'] != $_POST['csrf_to
                 mysqli_stmt_bind_param($query_update, "si", $cocckie_token, $user_id);
                 mysqli_stmt_execute($query_update);
               setcookie("cocckie_token", $cocckie_token, time() + (86400 * 30), "/");
+              header("Location: viewPost.php");
 
 
            
