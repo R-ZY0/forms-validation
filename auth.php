@@ -1,8 +1,7 @@
 <?php 
-
 require('config.php');
 if (!isset($_SESSION['login']) && isset($_COOKIE['cookie_token'])){
-    $cookies =  $_COOKIE['remember_token'];
+    $cookies =  $_COOKIE['cookie_token'];
 
     $query =  mysqli_prepare($con,"SELECT  *  FROM  users  WHERE cookie =?");
 
@@ -13,7 +12,8 @@ if (!isset($_SESSION['login']) && isset($_COOKIE['cookie_token'])){
    $user= mysqli_fetch_assoc($data);
     $_SESSION['login']='true';
     $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['username']=$user['username'];
+ 
    }
 
 }
+?>
