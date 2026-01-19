@@ -64,7 +64,7 @@ $stmt =$con->prepare("Insert into users (name, email, phone, password) values (?
 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 $stmt->bind_param("ssss", $username, $email, $mobile, $hashed_password);
 $stmt->execute();
-header("Location: viewPost.php");
+header("Location: login.php");
 ?>
 
 

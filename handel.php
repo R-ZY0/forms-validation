@@ -97,7 +97,7 @@ setcookie("cookie_token", $cookie_token, time() + (86400 * 30), "/", "", false, 
 /* امسح التوكنز */
 unset($_SESSION['csrf_token'], $_SESSION['brute_token']);
 
-header("Location: viewPost.php");
+header("Location: index.php");
 exit;
 ?>
 
