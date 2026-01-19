@@ -99,3 +99,5 @@ unset($_SESSION['csrf_token'], $_SESSION['brute_token']);
 
 header("Location: viewPost.php");
 exit;
+?>
+

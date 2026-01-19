@@ -97,6 +97,23 @@
         margin-top: 10px;
         font-size: 14px;
     }
+    .Register-btn {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    padding: 12px;
+    background: #f1f1f1;
+    color: #333;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.Register-btn:hover {
+    background: #e0e0e0;
+}
+
 </style>
 
 </head>
@@ -140,12 +157,13 @@
         <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
         <div class="form-group token-box">
     <label>Write this token: <strong><?php echo $brute_token; ?></strong></label>
-    <input type="text" name="brute_token" placeholder="Enter Brute Token">
+    <input type="text" name="brute_token" placeholder="Enter Token">
     <small><?php echo $errors['brute_token'] ?? '' ?></small>
 </div>
 
 
         <button type="submit" name="submit">Login</button>
+        <a href="Registration.php" class="Register-btn">Register</a>
     </form>
 </body>
 
