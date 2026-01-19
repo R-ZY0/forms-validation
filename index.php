@@ -94,9 +94,49 @@
 <body>
 <?php
 session_start();
+require('config.php'); // mysqli connection
 
+/* =======================
+   1. DELETE TOKEN FROM DATABASE
+======================= */
 
+if (isset($_COOKIE['cookie'])) {
+    $token = $_COOKIE['cookie'];
 
+    // Remove token from DB
+    $stmt = $conn->prepare("UPDATE users SET cookie = NULL WHERE cookie = ?");
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $stmt->close();
+}
+
+/* =======================
+   2. DELETE COOKIE FROM BROWSER
+======================= */
+
+// Delete remember me cookie
+if (isset($_COOKIE['cookie'])) {
+    setcookie("cookie", "", time() - 3600, "/", "", false, true);
+}
+
+// Delete PHP session cookie
+if (isset($_COOKIE[session_name()])) {
+    setcookie(session_name(), "", time() - 3600, "/");
+}
+
+/* =======================
+   3. DESTROY SESSION
+======================= */
+
+$_SESSION = [];
+session_destroy();
+
+/* =======================
+   4. REDIRECT
+======================= */
+
+header("Location: index.php");
+exit;
 
 ?>
 <!-- ===== HEADER ===== -->
@@ -108,7 +148,7 @@ session_start();
 
         <nav class="nav-actions">
             <?php if (!empty($_SESSION['login'])): ?>
-                <a href="logout.php" class="btn btn-logout">Logout</a>
+                <a href="" class="btn btn-logout">Logout</a>
             <?php else: ?>
                 <a href="login.php" class="btn btn-login">Login</a>
                 <a href="Registration.php" class="btn btn-register">Register</a>
