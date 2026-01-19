@@ -1,3 +1,7 @@
 <?php
-$con=mysqli_connect("localhost","root","null","blog");
+$con = mysqli_connect("localhost", "root", "", "blog");
+
+if (!$con) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 ?>
