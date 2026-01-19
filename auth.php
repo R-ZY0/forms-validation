@@ -1,5 +1,5 @@
 <?php 
-session_start();
+
 require('config.php');
 if (!isset($_SESSION['login']) && isset($_COOKIE['cookie_token'])){
     $cookies =  $_COOKIE['remember_token'];

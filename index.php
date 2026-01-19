@@ -1,23 +1,27 @@
+<?php
+session_start();
+require('auth.php');
+require('config.php');
 
+if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Header with Login & Register</title>
+    <title>Navbar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
         body {
             margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
             background: #f4f6f8;
         }
 
-        /* ===== HEADER ===== */
         .site-header {
             background: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -43,103 +47,41 @@
         .nav-actions {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
 
         .btn {
             padding: 8px 18px;
             border-radius: 6px;
-            text-decoration: none;
             font-size: 14px;
-            transition: 0.3s;
+            cursor: pointer;
             border: 1px solid transparent;
+            text-decoration: none;
         }
 
-        .btn-login {
-            color: #4e73df;
-            border-color: #4e73df;
-        }
-
-        .btn-login:hover {
-            background: #4e73df;
+        .btn-posts {
+            background: #3498db;
             color: #fff;
         }
 
-        .btn-register {
-            background: #1cc88a;
-            color: #fff;
-            border-color: #1cc88a;
-        }
-
-        .btn-register:hover {
-            background: #17a673;
+        .btn-posts:hover {
+            background: #2980b9;
         }
 
         .btn-logout {
             background: #e74c3c;
             color: #fff;
-            border-color: #e74c3c;
+            border: none;
         }
 
         .btn-logout:hover {
             background: #c0392b;
         }
-
-        /* ===== DEMO CONTENT ===== */
-        .content {
-            padding: 40px;
-            text-align: center;
-        }
     </style>
 </head>
+
 <body>
-<?php
-session_start();
-require('config.php'); // mysqli connection
 
-/* =======================
-   1. DELETE TOKEN FROM DATABASE
-======================= */
-
-if (isset($_COOKIE['cookie'])) {
-    $token = $_COOKIE['cookie'];
-
-    // Remove token from DB
-    $stmt = $conn->prepare("UPDATE users SET cookie = NULL WHERE cookie = ?");
-    $stmt->bind_param("s", $token);
-    $stmt->execute();
-    $stmt->close();
-}
-
-/* =======================
-   2. DELETE COOKIE FROM BROWSER
-======================= */
-
-// Delete remember me cookie
-if (isset($_COOKIE['cookie'])) {
-    setcookie("cookie", "", time() - 3600, "/", "", false, true);
-}
-
-// Delete PHP session cookie
-if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), "", time() - 3600, "/");
-}
-
-/* =======================
-   3. DESTROY SESSION
-======================= */
-
-$_SESSION = [];
-session_destroy();
-
-/* =======================
-   4. REDIRECT
-======================= */
-
-header("Location: index.php");
-exit;
-
-?>
-<!-- ===== HEADER ===== -->
 <header class="site-header">
     <div class="container">
         <div class="logo">
@@ -147,21 +89,13 @@ exit;
         </div>
 
         <nav class="nav-actions">
-            <?php if (!empty($_SESSION['login'])): ?>
-                <a href="" class="btn btn-logout">Logout</a>
-            <?php else: ?>
-                <a href="login.php" class="btn btn-login">Login</a>
-                <a href="Registration.php" class="btn btn-register">Register</a>
-            <?php endif; ?>
+            <!-- All Posts -->
+            <a href="posts.php" class="btn btn-posts">All Posts</a>
+
+            <!-- Logout (POST) -->
+            <form action="delete_coocke.php" method="post">
+                <button type="submit" class="btn btn-logout">Logout</button>
+            </form>
         </nav>
     </div>
 </header>
-
-<!-- ===== PAGE CONTENT (Example) ===== -->
-<div class="content">
-    <h2>Welcome to the website</h2>
-    <p>This is a demo page with header buttons.</p>
-</div>
-
-</body>
-</html>
