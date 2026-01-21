@@ -83,6 +83,8 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $post['user_id']) {
         .btn-delete {
             background: #e74c3c;
         }
+     
+
     </style>
 </head>
 
@@ -107,6 +109,7 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $post['user_id']) {
             <form action="delete_post.php" method="POST" onsubmit="return confirm('Are you sure?')">
                 <input type="hidden" name="post_token" value="<?= $post['post_token'] ?>">
                 <button type="submit" class="btn btn-delete">Delete</button>
+                
             </form>
         </div>
     <?php } ?>
