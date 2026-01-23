@@ -1,0 +1,174 @@
+-- ================================================
+-- BLOG DATABASE SCHEMA
+-- Updated with proper structure and indexes
+-- ================================================
+
+-- Create database
+CREATE DATABASE IF NOT EXISTS blog 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+USE blog;
+
+-- ================================================
+-- USERS TABLE
+-- ================================================
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(15) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    cookie VARCHAR(64) DEFAULT NULL,
+    email_verified TINYINT(1) DEFAULT 0,
+    is_active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_login TIMESTAMP NULL,
+    
+    INDEX idx_email (email),
+    INDEX idx_cookie (cookie),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================
+-- POSTS TABLE
+-- ================================================
+CREATE TABLE IF NOT EXISTS posts (
+    post_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    image VARCHAR(255) DEFAULT NULL,
+    post_token VARCHAR(64) NOT NULL UNIQUE,
+    user_id INT NOT NULL,
+    view_count INT DEFAULT 0,
+    is_published TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    
+    INDEX idx_post_token (post_token),
+    INDEX idx_user_id (user_id),
+    INDEX idx_created_at (created_at),
+    INDEX idx_is_published (is_published),
+    
+    FULLTEXT INDEX idx_title_body (title, body)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================
+-- CATEGORIES TABLE (Optional Enhancement)
+-- ================================================
+CREATE TABLE IF NOT EXISTS categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    slug VARCHAR(50) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    INDEX idx_slug (slug)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================
+-- POST_CATEGORIES (Many-to-Many relationship)
+-- ================================================
+CREATE TABLE IF NOT EXISTS post_categories (
+    post_id INT NOT NULL,
+    category_id INT NOT NULL,
+    
+    PRIMARY KEY (post_id, category_id),
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================
+-- COMMENTS TABLE (Optional Enhancement)
+-- ================================================
+CREATE TABLE IF NOT EXISTS comments (
+    comment_id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    is_approved TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    
+    INDEX idx_post_id (post_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================
+-- PASSWORD_RESETS TABLE (For password recovery)
+-- ================================================
+CREATE TABLE IF NOT EXISTS password_resets (
+    reset_id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL,
+    token VARCHAR(64) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    INDEX idx_email (email),
+    INDEX idx_token (token),
+    INDEX idx_expires_at (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================
+-- LIKES TABLE (Optional Enhancement)
+-- ================================================
+CREATE TABLE IF NOT EXISTS post_likes (
+    like_id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    UNIQUE KEY unique_like (post_id, user_id),
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    
+    INDEX idx_post_id (post_id),
+    INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================
+-- INSERT SAMPLE DATA
+-- ================================================
+
+-- Sample Categories
+INSERT INTO categories (name, slug, description) VALUES
+('Technology', 'technology', 'Posts about technology and programming'),
+('Lifestyle', 'lifestyle', 'Posts about daily life and experiences'),
+('Travel', 'travel', 'Posts about travel and adventures'),
+('Food', 'food', 'Posts about food and recipes');
+
+-- Sample User (password: Test@123)
+INSERT INTO users (name, email, phone, password) VALUES
+('John Doe', 'john@example.com', '1234567890', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+
+-- ================================================
+-- USEFUL QUERIES
+-- ================================================
+
+-- Get posts with author info and category count
+-- SELECT p.*, u.name as author, COUNT(DISTINCT pc.category_id) as category_count
+-- FROM posts p
+-- JOIN users u ON p.user_id = u.user_id
+-- LEFT JOIN post_categories pc ON p.post_id = pc.post_id
+-- GROUP BY p.post_id
+-- ORDER BY p.created_at DESC;
+
+-- Get posts by category
+-- SELECT p.*, u.name as author, c.name as category
+-- FROM posts p
+-- JOIN users u ON p.user_id = u.user_id
+-- JOIN post_categories pc ON p.post_id = pc.post_id
+-- JOIN categories c ON pc.category_id = c.category_id
+-- WHERE c.slug = 'technology'
+-- ORDER BY p.created_at DESC;
+
+-- Search posts (full-text search)
+-- SELECT * FROM posts
+-- WHERE MATCH(title, body) AGAINST('search term' IN NATURAL LANGUAGE MODE);

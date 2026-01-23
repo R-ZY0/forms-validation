@@ -1,0 +1,107 @@
+# ================================================
+# ENVIRONMENT CONFIGURATION
+# Copy this file to .env and update with your values
+# NEVER commit .env to version control
+# ================================================
+
+# ================================================
+# APPLICATION SETTINGS
+# ================================================
+APP_NAME="My Blog"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost
+
+# ================================================
+# DATABASE CONFIGURATION
+# ================================================
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=blog
+DB_CHARSET=utf8mb4
+
+# ================================================
+# SESSION CONFIGURATION
+# ================================================
+SESSION_LIFETIME=7200
+SESSION_SECURE=false
+SESSION_HTTPONLY=true
+SESSION_SAMESITE=Strict
+
+# ================================================
+# COOKIE CONFIGURATION
+# ================================================
+COOKIE_LIFETIME=2592000
+COOKIE_SECURE=false
+COOKIE_HTTPONLY=true
+COOKIE_SAMESITE=Strict
+
+# ================================================
+# FILE UPLOAD SETTINGS
+# ================================================
+UPLOAD_MAX_SIZE=2097152
+UPLOAD_ALLOWED_TYPES=jpg,jpeg,png,webp,gif
+UPLOAD_DIR=uploads/posts/
+
+# ================================================
+# SECURITY SETTINGS
+# ================================================
+# Generate with: bin2hex(random_bytes(32))
+APP_SECRET_KEY=your-secret-key-here
+
+# Rate limiting
+RATE_LIMIT_MAX_ATTEMPTS=5
+RATE_LIMIT_TIME_WINDOW=900
+
+# Password requirements
+PASSWORD_MIN_LENGTH=8
+PASSWORD_REQUIRE_UPPERCASE=true
+PASSWORD_REQUIRE_LOWERCASE=true
+PASSWORD_REQUIRE_NUMBER=true
+PASSWORD_REQUIRE_SPECIAL=true
+
+# ================================================
+# EMAIL CONFIGURATION (for future features)
+# ================================================
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@yourdomain.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+# ================================================
+# PAGINATION
+# ================================================
+POSTS_PER_PAGE=12
+
+# ================================================
+# CACHE SETTINGS (for future optimization)
+# ================================================
+CACHE_ENABLED=false
+CACHE_LIFETIME=3600
+
+# ================================================
+# LOGGING
+# ================================================
+LOG_ENABLED=true
+LOG_FILE=logs/app.log
+LOG_LEVEL=debug
+
+# ================================================
+# RECAPTCHA (optional - for brute force protection)
+# ================================================
+RECAPTCHA_SITE_KEY=
+RECAPTCHA_SECRET_KEY=
+RECAPTCHA_ENABLED=false
+
+# ================================================
+# SOCIAL MEDIA (optional)
+# ================================================
+FACEBOOK_URL=
+TWITTER_URL=
+INSTAGRAM_URL=
+LINKEDIN_URL=
