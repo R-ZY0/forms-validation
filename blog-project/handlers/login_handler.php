@@ -1,9 +1,9 @@
 <?php
 session_start();
-require('config.php');
-require('helpers/security.php');
-require('helpers/validation.php');
-
+require('../config/database.php');      // Go up one level
+require('../helpers/security.php');     // Go up one level
+require('../helpers/validation.php');   // Go up one level
+require('../auth.php'); 
 $errors = [];
 
 // Check if it's a POST request
